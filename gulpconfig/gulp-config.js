@@ -47,7 +47,7 @@ let Configuration = function() {
 		this.browserSync = {
 			// server: 'dist/'
 			proxy: 'localhost:8082',
-			port: 3000,
+			port: 3641,
 			https: true
 		}
 			
