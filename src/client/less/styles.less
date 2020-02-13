@@ -1,0 +1,66 @@
+html, body {
+	margin: 0;
+	background: #ccc;
+	font-family: 'Montserrat';
+}
+
+body {
+	display: grid;
+	grid-template-columns: 15% 85%;
+}
+
+#dropZone {
+	grid-column: 1 / span 2;
+	border: 3px dashed rgb(0, 140, 255);
+	margin: calc(1% - 1px);
+	padding: calc(1% - 1px);
+	width:  96%;
+	height: 100px;
+	border-radius: 25px;
+	font-size: 30px;
+	text-align: center;
+	line-height: 100px;
+	cursor: pointer;
+
+	&:hover {
+	}
+}
+
+canvas {
+	margin: auto;
+	width: 50%;
+	background: #aaa;
+}
+
+#controls {
+	padding: 2%;
+	.fillFixed {
+		display: grid;
+		grid-template-columns: 20px auto 20px 45px 15px;
+		align-items: center;
+
+		.slider {
+			grid-column: 1 / span 2;
+		}
+
+		.seperator {
+			width: 1px;
+			height: 100%;
+			margin: 0 auto;
+
+			&.start {
+				height: 20px;
+				margin-bottom: -10px;
+			}
+			
+			&.end {
+				height: 20px;
+				margin-top: -10px;
+			}
+
+			&.single {
+				height: 20px;
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+extends ../templates/base.template.pug
+
+include ../mixins/slider.mixin.pug
+
+block head
+    
+    title Static Site
+
+block body
+
+    #dropZone Select / Drop files
+    
+    #controls
+
+        +sliderValue('Canvas Size', 'canvasSize', '512', 'px', '64', '2048', '1', 'uInt')
+        +sliderValue('FPS', 'fps', '12', 'fps', '1', '60', '1', 'uInt')
+        +sliderValue('Line Width', 'lineWidth', '1', 'px', '0', '10', '0.1', 'uFloat')
+
+    canvas
+

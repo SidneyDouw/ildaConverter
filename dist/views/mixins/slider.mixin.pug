@@ -1,0 +1,13 @@
+mixin sliderValue(label, scriptName, defaultValue, valueType, min, max, step, dataType, dependencies, keyframeable)
+    .property(name= scriptName, type="slider", dataType= dataType, dependencies= dependencies)
+        .fillFixed
+            if keyframeable == 'false'
+                .keyframeIndicator.hidden
+            else
+                .keyframeIndicator
+            .label(title= scriptName)= label
+            .seperator.start
+            input.slider(type="range", name= scriptName, value= defaultValue, min= min, max= max, step= step)
+            .seperator.end
+            input.value(type="text", name= scriptName + 'Variation', value= defaultValue)
+            .suffix= valueType

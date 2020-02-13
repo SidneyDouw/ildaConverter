@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "sourceMap": true,
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "lib": ["es2016", "dom"]
+    },
+    "exclude": [
+        "node_modules",
+        "src/server"
+    ]
+}
