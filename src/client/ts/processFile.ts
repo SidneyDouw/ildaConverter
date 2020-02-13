@@ -4,6 +4,7 @@ import startDrawingLoop from './drawingLoop'
 
 export default function processFile (file: File) {
 
+    
     getBufferData(file)
     .then(data => {
 

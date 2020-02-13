@@ -257,7 +257,7 @@ export default class ILDAFile {
             this.readPointData()
 
         }
-
+        
         // console.log(this.headerData)
         // console.log(this.pointData)
 
@@ -287,6 +287,8 @@ export default class ILDAFile {
     }
 
     readPointData() {
+
+        if (this.byteOffset >= this.bufferData.length) return
 
         let header = this.headerData[this.headerData.length-1]
         let pointStructure = ilda_point_structure['ilda_' + header.formatCode]

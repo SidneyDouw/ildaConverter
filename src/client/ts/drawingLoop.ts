@@ -37,7 +37,7 @@ let requestID: number
 
 export default function startDrawingLoop(file: ILDAFile) {
 
-    currentFrame = 0
+    currentFrame = 1
     currentFps = 0
 
     // FPS Limiter
@@ -64,11 +64,12 @@ export default function startDrawingLoop(file: ILDAFile) {
             ctx.lineWidth = settings.lineWidth
 
             for (let i = 1; i < file.pointData[currentFrame].length; i++) {
-
+                
                 let startPoint = file.pointData[currentFrame][i - 1]
                 let nextPoint = file.pointData[currentFrame][i + 0]
 
                 if (startPoint.statusCode == 64) continue
+                if (nextPoint.statusCode == 64) continue
 
                 // Position
 
@@ -76,6 +77,7 @@ export default function startDrawingLoop(file: ILDAFile) {
                 let y1 = (1 - (startPoint.y + 32768) / 65535) * settings.canvasSize
                 let x2 = (nextPoint.x + 32768) / 65535 * settings.canvasSize
                 let y2 = (1 - (nextPoint.y + 32768) / 65535) * settings.canvasSize
+                    // Z is still missing
 
                 // Color
 
@@ -83,9 +85,11 @@ export default function startDrawingLoop(file: ILDAFile) {
 
                 if (startPoint.colorIndex) {
 
-                    r = colorIndex[startPoint.colorIndex].r
-                    g = colorIndex[startPoint.colorIndex].g
-                    b = colorIndex[startPoint.colorIndex].b
+                    let ci = startPoint.colorIndex % 64
+
+                    r = colorIndex[ci].r
+                    g = colorIndex[ci].g
+                    b = colorIndex[ci].b
 
                 } else {
 
