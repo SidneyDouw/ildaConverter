@@ -3,14 +3,13 @@ import startDrawingLoop from './drawingLoop'
 
 
 export default function processFile (file: File) {
-
     
     getBufferData(file)
     .then(data => {
 
         if (checkFileFormat(data)) {
 
-            startDrawingLoop(new ILDAFile(data))
+            startDrawingLoop(new ILDAFile(file.name, data))
 
         } else {
 

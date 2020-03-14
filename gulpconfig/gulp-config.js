@@ -59,7 +59,6 @@ let Configuration = function() {
 				},
 				ts: {
 					index: './src/client/ts/index.ts',
-					// index2: ./src/client/ts/index2.ts
 				}
 			},
 			module: {

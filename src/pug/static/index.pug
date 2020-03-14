@@ -8,14 +8,68 @@ block head
 
 block body
 
-    #dropZone Select / Drop files
-    
-    #controls
+    header
+        #container
+            //- div ILDA Converter
+            nav
+                a(href="#dropZone") Convert
+                a API
+                a Contact
 
-        +sliderValue('Canvas Size', 'canvasSize', '512', 'px', '64', '2048', '1', 'uInt')
-        +sliderValue('Frames per Second', 'fps', '12', 'fps', '1', '60', '1', 'uInt')
-        +sliderValue('Line Width', 'lineWidth', '1', 'px', '0', '10', '0.1', 'uFloat')
+    content
 
-    #canvasContainer
-        canvas
+        #infoContainer
 
+            h1 Online ILDA Converter
+            h3 Easily convert your ILDA files to various image and video formats 
+
+
+        #howToContainer
+
+            h2 How to convert your ILDA files
+            
+            .step
+                .img
+                p Choose your file
+            
+            .step
+                .img
+                p Adjust the parameters
+            
+            .step
+                .img
+                p Download & enjoy
+
+
+        #dropZone Select / Drop files
+
+
+        #conversionAreaContainer
+            #conversionArea
+
+                
+                #controls
+
+                    p#filename ILDA filename
+
+                    +sliderValue('Resolution', 'resolution', '512', 'px', '32', '1024', '1', 'uInt')
+                    +sliderValue('Frames per Second', 'fps', '12', 'fps', '1', '60', '1', 'uInt')
+                    +sliderValue('Line Width', 'lineWidth', '1', 'px', '0.1', '10', '0.1', 'uFloat')
+
+                    button#download Download
+
+                #canvasContainer
+                    canvas
+
+
+        //- #conversionCountContainer
+
+        //-     h2 Total Conversions:
+        //-     h2 186491827
+        
+    footer
+
+        #container
+            div © 2020 Sidney Douw
+            nav
+                a Privacy

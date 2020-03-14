@@ -216,11 +216,14 @@ export default class ILDAFile {
 
     // FileInfo
 
+    filename: string
     formatCode: number
     length: number
 
 
-    constructor(bufferData: Buffer) {
+    constructor(filename: string, bufferData: Buffer) {
+
+        this.filename = filename
 
         this.bufferData = bufferData
         this.byteOffset = 0

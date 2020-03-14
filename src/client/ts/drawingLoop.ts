@@ -3,24 +3,31 @@ import colorIndex from './defaultColorIndex'
 
 import Values from '../../../../webParticles/src/ts/ui_thread/values/Values'
 
-
+let filenameDiv = document.getElementById('filename')
+let downloadButton = document.getElementById('download')
 let values = new Values(document.getElementById('controls'))
+
+
+downloadButton.onclick = () => {
+    alert('not yet ;)')
+}
+
 
 for (let val of values.values) {
     val.on('change', () => {
         settings[val.scriptName] = val.value
 
-        if (val.scriptName == 'canvasSize') {
-            ctx.canvas.width = ctx.canvas.height = settings.canvasSize
+        if (val.scriptName == 'resolution') {
+            ctx.canvas.width = ctx.canvas.height = settings.resolution
         }
     })
 }
 
 
 const settings: {[key: string]: number} = {
-    canvasSize: 512,
+    resolution: 512,
     fps: 12,
-    lineWidth: 2
+    lineWidth: 1
 }
 
 
@@ -29,7 +36,7 @@ let currentFps = 0
 
 
 let ctx = document.querySelector('canvas').getContext('2d')
-    ctx.canvas.width = ctx.canvas.height = settings.canvasSize
+    ctx.canvas.width = ctx.canvas.height = settings.resolution
 
 
 let requestID: number
@@ -47,6 +54,9 @@ export default function startDrawingLoop(file: ILDAFile) {
     // FPS Counter
     let times: number[] = []
 
+    // Set Filename in UI
+    filenameDiv.textContent = file.filename
+
 
     function loop() {
 
@@ -60,7 +70,7 @@ export default function startDrawingLoop(file: ILDAFile) {
 
             // Render Code Here
 
-            ctx.clearRect(0, 0, settings.canvasSize, settings.canvasSize)
+            ctx.clearRect(0, 0, settings.resolution, settings.resolution)
             ctx.lineWidth = settings.lineWidth
 
             for (let i = 1; i < file.pointData[currentFrame].length; i++) {
@@ -73,10 +83,10 @@ export default function startDrawingLoop(file: ILDAFile) {
 
                 // Position
 
-                let x1 = (startPoint.x + 32768) / 65535 * settings.canvasSize
-                let y1 = (1 - (startPoint.y + 32768) / 65535) * settings.canvasSize
-                let x2 = (nextPoint.x + 32768) / 65535 * settings.canvasSize
-                let y2 = (1 - (nextPoint.y + 32768) / 65535) * settings.canvasSize
+                let x1 = (startPoint.x + 32768) / 65535 * settings.resolution
+                let y1 = (1 - (startPoint.y + 32768) / 65535) * settings.resolution
+                let x2 = (nextPoint.x + 32768) / 65535 * settings.resolution
+                let y2 = (1 - (nextPoint.y + 32768) / 65535) * settings.resolution
                     // Z is still missing
 
                 // Color
