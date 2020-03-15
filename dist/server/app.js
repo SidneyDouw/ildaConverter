@@ -5,6 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
+const ILDAFile_1 = __importDefault(require("./shared/ILDAFile"));
+const createGif_1 = __importDefault(require("./converter/createGif"));
+const stream_1 = require("stream");
 const app = express_1.default();
 app.set('view engine', 'pug');
 app.set('views', 'dist/views/dynamic');
@@ -14,19 +17,33 @@ app.use(express_fileupload_1.default({
         filesize: 8 * 1024 * 1024 * 1
     }
 }));
-app.post('/upload', (req, res) => {
-    if (req.files) {
-        let ildaFile = req.files.ilda;
-        let name = ildaFile.name;
-        let data = ildaFile.data;
-        return res.status(200).send({
-            message: 'Recieved file ' + name,
-            data: data
-        });
-    }
-    else {
-        return res.status(400).send({
-            message: 'Error uploading file'
+app.post('/convertToGif', (req, res) => {
+    let files = req.files;
+    if (files) {
+        let fileName = files.data.name;
+        let fileSize = files.data.size;
+        let bufferData = files.data.data;
+        let resolution = 256;
+        let lineWidth = 1;
+        let fps = 12;
+        if (req.body) {
+            resolution = req.body.resolution ? parseInt(req.body.resolution) : resolution;
+            lineWidth = req.body.lineWidth ? parseFloat(req.body.lineWidth) : lineWidth;
+            fps = req.body.fps ? parseInt(req.body.fps) : fps;
+        }
+        console.log(files, resolution, lineWidth, fps);
+        let ildaFile = new ILDAFile_1.default(fileName, bufferData);
+        createGif_1.default(ildaFile.pointData, {
+            resolution: resolution,
+            lineWidth: lineWidth,
+            fps: fps
+        }, (buffer) => {
+            let readStream = new stream_1.Stream.PassThrough();
+            readStream.end(buffer);
+            res.set('Content-Type', 'application/octet-stream');
+            res.set('Content-Disposition', 'attachment; filename=' + fileName.replace('.ild', '.gif'));
+            res.set('Content-Length', buffer.length + '');
+            readStream.pipe(res);
         });
     }
 });

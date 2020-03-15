@@ -1,19 +1,37 @@
-import ILDAFile from './ILDAFile'
+import ILDAFile from '../../server/shared/ILDAFile'
 import startDrawingLoop from './drawingLoop'
+import globals from './globals'
+
+
+// Converts the file to a Buffer
+// Checks if the file is valid
+// Starts the drawing loop if it is
+
 
 
 export default function processFile (file: File) {
+
+    let filenameDiv = document.getElementById('filename')
+    filenameDiv.className = ''
+    filenameDiv.textContent = 'loading...'
     
     getBufferData(file)
     .then(data => {
 
         if (checkFileFormat(data)) {
 
-            startDrawingLoop(new ILDAFile(file.name, data))
+            globals.activeFile = file
+            globals.activeFileParsed = new ILDAFile(file.name, data)
+            
+            startDrawingLoop(globals.activeFileParsed)
 
+            filenameDiv.className = ''
+            filenameDiv.textContent = file.name
+            
         } else {
-
-            console.log('Invalid File Format')
+            
+            filenameDiv.className = 'error'
+            filenameDiv.textContent = 'Invalid File Format'
 
         }
     
@@ -32,8 +50,7 @@ function getBufferData(file: File) {
                 resolve(Buffer.from(reader.result))
             }
 
-    })
-        
+    })      
     
 }
 

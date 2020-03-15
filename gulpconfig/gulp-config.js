@@ -24,8 +24,8 @@ let Configuration = function() {
 				// jsServer:	'src/server/**/*.js',
 				tsServer:	'src/server/**/*.ts',
 				img:		'src/client/img/**/*',
-				font:		'src/client/fonts/**/*',
-				audio:		'src/client/audio/**/*',
+				// font:		'src/client/fonts/**/*',
+				// audio:		'src/client/audio/**/*',
 			},
 			dest: {
 				root: 		'dist/',
@@ -48,7 +48,7 @@ let Configuration = function() {
 			// server: 'dist/'
 			proxy: 'localhost:8082',
 			port: 3641,
-			https: true
+			https: false
 		}
 			
 		this.webpack = {
@@ -58,7 +58,7 @@ let Configuration = function() {
 					// index2: ./src/client/js/index2.js
 				},
 				ts: {
-					index: './src/client/ts/index.ts',
+					index: './src/client/ts/index.ts'
 				}
 			},
 			module: {

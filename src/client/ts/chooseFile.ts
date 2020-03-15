@@ -2,6 +2,10 @@ import processFile from './processFile'
 import { stopDrawingLoop } from './drawingLoop'
 
 
+// Handles the User Interaction of selecting / dropping a file
+// passes the file to the 'processFile' function
+
+
 const dropZone = document.getElementById('dropZone')
 
 dropZone.onclick = (evt) => {
