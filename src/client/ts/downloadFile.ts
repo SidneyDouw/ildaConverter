@@ -13,16 +13,14 @@ let downloadButton = document.getElementById('download')
         formData.append('lineWidth', globals.settings.lineWidth + '')
         formData.append('fps', globals.settings.fps + '')
         
-        // formData.append('fileFormat', globals.settings.fileFormat + '')
+        formData.append('fileFormat', globals.settings.fileFormat + '')
 
     
-    fetch('/convertToGif', {
+    fetch('/convert', {
         method: 'post',
         body: formData
     })
     .then(response => {
-
-        console.log(response.headers)
 
         if (response.status == 200) {
             response.blob().then(blob => {
@@ -32,7 +30,12 @@ let downloadButton = document.getElementById('download')
                 let a = document.createElement('a')
                     a.style.display = 'none';
                     a.href = url;
+
+                if (globals.settings.fileFormat == 'GIF') {
                     a.download = globals.activeFile.name.replace('.ild', '.gif')
+                } else {
+                    a.download = globals.activeFile.name.replace('.ild', '.zip')
+                }
 
                 document.body.appendChild(a)
                 a.click()

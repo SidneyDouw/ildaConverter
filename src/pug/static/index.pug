@@ -12,9 +12,9 @@ block body
         #container
             //- div ILDA Converter
             nav
-                a(href="#dropZone") Convert
-                a API
-                a Contact
+                a(href="#convert") Convert
+                a(href="#api") API
+                a(href="#contact") Contact
 
     content
 
@@ -41,31 +41,51 @@ block body
                 p Download & enjoy
 
 
-        #dropZone Select / Drop files
+        #convert
 
+            #dropZone Select / Drop files
 
-        #conversionAreaContainer
-            #conversionArea
+            #conversionAreaContainer
+                #conversionArea
 
-                
-                #controls
+                    
+                    #controls
 
-                    p#filename ILDA filename
+                        p#filename ILDA filename
 
-                    +sliderValue('Resolution', 'resolution', '512', 'px', '32', '1024', '1', 'uInt')
-                    +sliderValue('Frames per Second', 'fps', '12', 'fps', '1', '60', '1', 'uInt')
-                    +sliderValue('Line Width', 'lineWidth', '1', 'px', '0.1', '10', '0.1', 'uFloat')
+                        +sliderValue('Resolution', 'resolution', '256', 'px', '16', '512', '1', 'uInt')
+                        +sliderValue('Frames per Second', 'fps', '12', 'fps', '1', '50', '1', 'uInt')
+                        +sliderValue('Line Width', 'lineWidth', '1', 'px', '0.1', '10', '0.1', 'uFloat')
 
-                    button#download Download
+                        button#download Download
 
-                #canvasContainer
-                    canvas
+                    #canvasContainer
+                        canvas
 
 
         //- #conversionCountContainer
 
         //-     h2 Total Conversions:
         //-     h2 186491827
+
+
+        #api
+
+
+            h2 API
+            h3 Conversion is also possible via post request with an attached .ild file.
+
+            .code
+                p curl -F "data=@/path/to/file.ild" http://ildaconverter.sidneydouw.de/convert
+
+            .code
+                p let formData = new FormData()
+                p formData.append('data', globals.activeFile)
+
+                p fetch('/convert', {
+                p     method: 'post',
+                p     body: formData
+                p })
         
     footer
 

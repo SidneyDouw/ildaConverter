@@ -1,13 +1,9 @@
 import ILDAFile from "../../server/shared/ILDAFile"
+import drawSettings from "../../server/shared/drawSettings"
 
 interface globals {
 
-    settings: {
-        [key: string]: number
-        resolution: number
-        lineWidth: number
-        fps: number
-    }
+    settings: drawSettings
 
     activeFile: File
     activeFileParsed: ILDAFile
@@ -17,9 +13,10 @@ interface globals {
 const globals: globals = {
 
     settings: {
-        resolution: 512,
+        resolution: 256,
         lineWidth: 1,
-        fps: 12
+        fps: 12,
+        fileFormat: 'GIF'
     },
 
     activeFile: null,

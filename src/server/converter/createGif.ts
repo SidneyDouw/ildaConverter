@@ -1,61 +1,49 @@
-import fs from 'fs'
-import { createCanvas } from 'canvas'
-import drawFrame from '../shared/drawFrame'
-
 import { PointData } from '../shared/ILDAFile'
+import drawSettings from '../shared/drawSettings'
+
+import drawFrame from '../shared/drawFrame'
 
 const GIFEncoder = require('gif-encoder-2')
 
 
-export default function createGif(drawData: PointData[][], settings: {resolution: number, lineWidth: number, fps: number}, callback: Function) {
-
-    // Create canvas and draw and save frames
-
-    let canvas = createCanvas(settings.resolution, settings.resolution)
-    let ctx = canvas.getContext('2d')
-
-    let frames = Object.keys(drawData)
-
+export default function createGIF(ctx: any, drawData: PointData[][], totalFrames: number, settings: drawSettings, callback: Function) {
 
     // Create GIF Encoder
 
-    let encoder = new GIFEncoder(settings.resolution, settings.resolution, 'neuquant', false, frames.length)
-
-        // encoder.createReadStream().pipe(fs.createWriteStream('test.gif'))
+    let encoder = new GIFEncoder(settings.resolution, settings.resolution, 'neuquant', false, totalFrames)
 
         encoder.setFrameRate(settings.fps)
         encoder.setQuality(10)
         encoder.start()
 
-    
-    encoder.on('progress', (percent: any) => {
-        console.log(percent)
-    }) 
+    // Progress Event
 
+    // encoder.on('progress', (percent: any) => {
+    //     console.log(percent)
+    // })
 
-    for (let frame of frames) {
+        
+    // Draw Frames and Encode
+
+    for (let frame = 0; frame < totalFrames; frame++) {
 
         // Draw Image
+        drawFrame(ctx, drawData, frame, settings)        
 
-        drawFrame(ctx, drawData, parseInt(frame), {
-            resolution: settings.resolution,
-            lineWidth: settings.lineWidth
-        })        
-
-
-        // Save Image
-
+        // Add encoded frame
         encoder.addFrame(ctx)
+
+        // Progress
+        console.log(Math.round(frame / (totalFrames-1)*10000) / 100)
 
     }
 
     encoder.finish()
 
+
+    // Send data to callback function
+
     let buffer = encoder.out.getData() as Buffer
-    callback.call(this, buffer)
-    // fs.writeFile('test.gif', buffer, (err) => {--
-    //     console.log('saved test.gif')
-    //     callback.apply(this, buffer)
-    // })
+    callback.call(null, buffer)
 
 }

@@ -1,8 +1,9 @@
 import { PointData } from './ILDAFile'
+import drawSettings from './drawSettings'
 import colorIndex from './defaultColorIndex'
 
 
-export default function drawFrame(ctx: any, drawData: PointData[][], frame: number, settings: {resolution: number, lineWidth: number}) {
+export default function drawFrame(ctx: any, drawData: PointData[][], frame: number, settings: drawSettings) {
 
     ctx.clearRect(0, 0, settings.resolution, settings.resolution)
     ctx.lineWidth = settings.lineWidth
