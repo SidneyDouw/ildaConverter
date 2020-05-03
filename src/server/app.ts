@@ -1,5 +1,6 @@
 import express from 'express'
 import fileupload from 'express-fileupload'
+import fs from 'fs'
 
 import ILDAFile from './shared/ILDAFile'
 import { Stream } from 'stream'
@@ -33,7 +34,15 @@ app.post('/convert', (req, res) => {
     let files = req.files as any
 
     if (!files) {
-        res.status(400).send('No files were uploaded.')
+        res.status(200).send(
+            "Required Values as FormData: \n" +
+            "  'data': File\n" +
+            "Optional\n" +
+            "  'resolution': number (default: 128)\n" +
+            "  'lineWidth': number (default: 1)\n" +
+            "  'fps': number (default: 25)\n" +
+            "  'fileFormat': string (Currently only 'GIF' is supported)\n"
+        )
         return
     }
 
@@ -50,59 +59,58 @@ app.post('/convert', (req, res) => {
     // Set default settings
 
     let settings: drawSettings = {
-        resolution: 256,
+        resolution: 128,
         lineWidth: 1,
-        fps: 12,
+        fps: 25,
         fileFormat: 'GIF'
     }
 
-    // Update default settings
+    // Update default settings    
 
-    if (req.body.resolution) {
+    if (req.body) {
+        if (req.body.resolution) {
 
-        if (isNaN(parseInt(req.body.resolution))) {
-            let msg = 'Invalid resolution, "' + req.body.resolution + '"cl is not a number'
-            console.log(msg)
-            res.status(400).send(msg)
-            return
+            if (isNaN(parseInt(req.body.resolution))) {
+                let msg = 'Invalid resolution, "' + req.body.resolution + '" is not a number'
+                console.log(msg)
+                res.status(400).send(msg)
+                return
+            }
+
+            settings.resolution = req.body.resolution ? clamp(parseInt(req.body.resolution), 16, 512) : settings.resolution
         }
 
-        settings.resolution = req.body.resolution ? clamp(parseInt(req.body.resolution), 16, 512) : settings.resolution
-    }
+        if (req.body.lineWidth) {
+            if (isNaN(parseFloat(req.body.lineWidth))) {
+                let msg = 'Invalid linewidth, "' + req.body.lineWidth + '" is not a number'
+                console.log(msg)
+                res.status(400).send(msg)
+                return
+            }
 
-    if (req.body.lineWidth) {
-        if (isNaN(parseFloat(req.body.lineWidth))) {
-            let msg = 'Invalid linewidth, "' + req.body.lineWidth + '"cl is not a number'
-            console.log(msg)
-            res.status(400).send(msg)
-            return
+            settings.lineWidth = req.body.lineWidth ? clamp(parseFloat(req.body.lineWidth), 0.1, 10) : settings.lineWidth
         }
 
-        settings.lineWidth = req.body.lineWidth ? clamp(parseFloat(req.body.lineWidth), 0.1, 10) : settings.lineWidth
-    }
+        if (req.body.fps) {
+            if (isNaN(parseInt(req.body.fps))) {
+                let msg = 'Invalid fps, "' + req.body.fps + '" is not a number'
+                console.log(msg)
+                res.status(400).send(msg)
+                return
+            }
 
-    if (req.body.fps) {
-        if (isNaN(parseInt(req.body.fps))) {
-            let msg = 'Invalid fps, "' + req.body.fps + '"cl is not a number'
-            console.log(msg)
-            res.status(400).send(msg)
-            return
+            settings.fps = req.body.fps ? clamp(parseInt(req.body.fps), 1, 50) : settings.fps
         }
 
-        settings.fps = req.body.fps ? clamp(parseInt(req.body.fps), 1, 50) : settings.fps
-    }
-
-    if (req.body.fileFormat) {
-        settings.fileFormat = req.body.fileFormat ? req.body.fileFormat : settings.fileFormat
+        if (req.body.fileFormat) {
+            settings.fileFormat = req.body.fileFormat ? req.body.fileFormat : settings.fileFormat
+        }
     }
     
-    
-    console.log('Settings:', settings)
-
 
     // Convert    
 
-    console.log('starting conversion process...')
+    console.log('starting conversion process with settings:', settings)
 
     converter(ildaFile.pointData, settings, (data: Buffer | archiver.Archiver, error: any) => {
 
@@ -113,6 +121,35 @@ app.post('/convert', (req, res) => {
         }
         
         console.log('conversion successful, sending file...\n\n')
+
+
+        // Update total conversions
+        
+        let fileString = ''
+        let input = fs.createReadStream('totalConversions.json')
+        input.addListener('data', (chunk) => {
+            fileString += Buffer.from(chunk).toString()
+        })
+        input.addListener('end', () => {
+
+            let json = JSON.parse(fileString)
+                json.count++
+
+            fs.createWriteStream('totalConversions.json').write(
+                JSON.stringify(json),
+                'utf-8',
+                (err) => {
+                    if (err) {
+                        console.log(err)
+                        return
+                    }
+                    console.log('Total Conversions:', json.count)
+                }
+            )
+        })
+
+
+        // Send converted file
 
         if (settings.fileFormat == 'GIF') {
 

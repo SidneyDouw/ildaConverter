@@ -34,7 +34,7 @@ export default function createGIF(ctx: any, drawData: PointData[][], totalFrames
         encoder.addFrame(ctx)
 
         // Progress
-        console.log(Math.round(frame / (totalFrames-1)*10000) / 100)
+        // console.log(Math.round(frame / (totalFrames-1)*10000) / 100)
 
     }
 

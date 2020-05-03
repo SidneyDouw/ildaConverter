@@ -5,7 +5,6 @@ import Values from '../../../../webParticles/src/ts/ui_thread/values/Values'
 import globals from './globals'
 
 
-
 // Update Settings via Sliders
 
 let values = new Values(document.getElementById('controls'))
@@ -19,7 +18,6 @@ for (let val of values.values) {
         }
     })
 }
-
 
 
 

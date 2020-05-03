@@ -15,7 +15,6 @@ let downloadButton = document.getElementById('download')
         
         formData.append('fileFormat', globals.settings.fileFormat + '')
 
-    
     fetch('/convert', {
         method: 'post',
         body: formData

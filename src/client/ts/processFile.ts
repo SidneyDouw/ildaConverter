@@ -3,10 +3,10 @@ import startDrawingLoop from './drawingLoop'
 import globals from './globals'
 
 
-// Converts the file to a Buffer
-// Checks if the file is valid
-// Starts the drawing loop if it is
-
+/* Converts the file to a Buffer
+ * Checks if the file is valid
+ * Starts the drawing loop if it is
+ */
 
 
 export default function processFile (file: File) {
@@ -40,7 +40,13 @@ export default function processFile (file: File) {
 }
 
 function getBufferData(file: File) {
-
+    /**
+     * Takes a File and converts it to a Buffer
+     * 
+     * @param file - The file to convert
+     * @returns A Promise of a converted Buffer
+     */
+    
     return new Promise<Buffer>((resolve, reject) => {
 
         let reader = new FileReader()
