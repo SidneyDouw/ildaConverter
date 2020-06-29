@@ -25,11 +25,6 @@ export default class Values {
             this.values.push(new fn[el.getAttribute('type')](el))
         })
 
-        // Fill Curve Value Dependencies
-        // Only works after all Values have been initialized
-        for (let currentValue of this.values) {
-        }
-
         // Fill dependencies / dependants List
         // Only works after all Values have been initialized
 

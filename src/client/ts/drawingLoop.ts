@@ -18,6 +18,8 @@ for (let val of values.values) {
     })
 }
 
+console.log(values)
+
 let ctx = document.querySelector('canvas').getContext('2d')
 ctx.canvas.width = ctx.canvas.height = globals.settings.resolution
 
