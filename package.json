@@ -4,7 +4,7 @@
   "description": "Template project structure",
   "main": "dist/server/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"no test specified\"",
     "start": "node dist/server/app.js",
     "dev": "gulp default",
     "build": "gulp build -p",
