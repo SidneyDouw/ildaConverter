@@ -1,5 +1,6 @@
 const { exec } = require('child_process')
 
+const URL = 'http://ildaconverter.sidneydouw.de'
 const ILDAfile = 'airplane_0.ild'
 const watermark = 'watermark_test_2.png'
 const watermark_alpha = 1

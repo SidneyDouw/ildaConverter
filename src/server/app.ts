@@ -23,7 +23,7 @@ app.use(express.static('dist/client'))
 app.use(
     fileupload({
         limits: {
-            fileSize: 50 * 1000 * 1000, //mb
+            fileSize: 30 * 1000 * 1000, //mb
         },
         abortOnLimit: true,
         debug: false,
