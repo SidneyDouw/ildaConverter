@@ -1,16 +1,25 @@
-// curl -X POST http://localhost:3641/convert
-// curl -X POST -F 'data=@airplane_0.ild' http://localhost:3641/convert --output ../test.gif
-
 const { exec } = require('child_process')
 
-const file = 'airplane_0.ild'
-const resolution = 128
+const ILDAfile = 'airplane_0.ild'
+const watermark = 'watermark_test_2.png'
+const watermark_alpha = 1
+const resolution = 256
 const lineWith = 1
 const fps = 25
 const fileFormat = 'GIF'
+const outputFile = 'test.gif'
 
 exec(
-    `curl -X POST -F 'data=@testFiles/${file}' -F 'resolution=${resolution}' -F 'lineWith=${lineWith}' -F 'fps=${fps}' -F 'fileFormat=${fileFormat}' http://localhost:3641/convert --output test.gif`,
+    `curl -X POST ` +
+        `-F 'data=@testFiles/${ILDAfile}' ` +
+        `-F 'watermark=@testFiles/${watermark}' ` +
+        `-F 'resolution=${resolution}' ` +
+        `-F 'lineWith=${lineWith}' ` +
+        `-F 'fps=${fps}' ` +
+        `-F 'fileFormat=${fileFormat}' ` +
+        `-F 'watermark_alpha=${watermark_alpha}' ` +
+        `http://localhost:3641/convert ` +
+        `--output ${outputFile}`,
     (err, stdout, stderr) => {
         if (err) {
             // node couldn't execute the command
