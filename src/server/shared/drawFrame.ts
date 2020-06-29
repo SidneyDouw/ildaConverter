@@ -1,14 +1,8 @@
 import { PointData } from './ILDAFile'
 import drawSettings from './drawSettings'
 import colorIndex from './defaultColorIndex'
-import { CanvasRenderingContext2D } from 'canvas'
 
-export default function drawFrame(
-    ctx: CanvasRenderingContext2D,
-    drawData: PointData[][],
-    frame: number,
-    settings: drawSettings,
-) {
+export default function drawFrame(ctx: any, drawData: PointData[][], frame: number, settings: drawSettings) {
     ctx.clearRect(0, 0, settings.resolution, settings.resolution)
     ctx.fillStyle = '#000'
     ctx.fillRect(0, 0, settings.resolution, settings.resolution)
