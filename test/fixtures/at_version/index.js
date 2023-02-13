@@ -23,10 +23,16 @@ const getDirectories = async (path) =>
 
 const generate_files_for_version = (version) => {
     const ILDAFile = require(`./${version}/dist/server/shared/ILDAFile`).default
-    const outputFolder = join(__dirname, `./${version}/json`)
+    const converter = require('./6236ee6/dist/server/converter/converter').default
 
-    if (!existsSync(outputFolder)) {
-        mkdirSync(outputFolder)
+    const jsonFolder = join(__dirname, `./${version}/json`)
+    const gifFolder = join(__dirname, `./${version}/gif`)
+
+    if (!existsSync(jsonFolder)) {
+        mkdirSync(jsonFolder)
+    }
+    if (!existsSync(gifFolder)) {
+        mkdirSync(gifFolder)
     }
 
     for (const name of files) {
@@ -34,7 +40,20 @@ const generate_files_for_version = (version) => {
 
         readFile(filename).then((data) => {
             const file = new ILDAFile(name, data)
-            writeFile(join(outputFolder, `/${name}.json`), JSON.stringify(file))
+            writeFile(join(jsonFolder, `/${name}.json`), JSON.stringify(file))
+
+            converter(
+                file.pointData,
+                {
+                    resolution: 512,
+                    lineWidth: 1,
+                    fps: 25,
+                    fileFormat: 'GIF',
+                },
+                (data) => {
+                    writeFile(join(gifFolder, `/${name}.gif`), data)
+                },
+            )
         })
     }
 }
