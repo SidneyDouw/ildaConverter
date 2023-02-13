@@ -12,11 +12,6 @@ import { Image, loadImage } from 'canvas'
 
 const app = express()
 
-// Pug Setup
-
-app.set('view engine', 'pug')
-app.set('views', 'dist/views/dynamic')
-
 // Routes
 
 app.use(express.static('dist/client'))

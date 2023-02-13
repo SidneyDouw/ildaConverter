@@ -16,13 +16,13 @@ let Configuration = function() {
 
 		this.paths = {
 			src: {
-				html: 		'src/client/html/**/*.html',
+				// html: 		'src/client/html/**/*.html',
 				pug: 		'src/pug/**/*.pug',
 				less:   	'src/client/less/**/*.less',
 				// js: 		'src/client/js/**/*.js',
 				ts:			'src/client/ts/**/*.ts',
 				// jsServer:	'src/server/**/*.js',
-				tsServer:	'src/server/**/*.ts',
+				// tsServer:	'src/server/**/*.ts',
 				img:		'src/client/img/**/*',
 				// font:		'src/client/fonts/**/*',
 				// audio:		'src/client/audio/**/*',

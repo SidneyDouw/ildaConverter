@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2016",
+        "noImplicitAny": true,
+        "esModuleInterop": true,
+        "outDir": "./dist/server/"
+    },
+    "exclude": ["src/client"]
+}
