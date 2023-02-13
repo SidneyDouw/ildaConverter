@@ -80,7 +80,7 @@ gulp.task('nodemon', nodemon);
 gulp.task('browserSync', browserSync);
 
 
-gulp.task('build', gulp.series('clear', 'buildVersion', gulp.parallel(getTaskList())))
+gulp.task('build', gulp.series('clear', gulp.parallel(getTaskList())))
 
 
 gulp.task('watch', function(done) {
