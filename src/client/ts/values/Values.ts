@@ -22,7 +22,24 @@ export default class Values {
         this.values = []
 
         Array.from(parentDiv.getElementsByClassName('property')).forEach((el) => {
-            this.values.push(new fn[el.getAttribute('type')!](el))
+            const type = el.getAttribute('type')!
+            switch (type) {
+                case 'text':
+                    this.values.push(new fn.text(el))
+                    break
+                case 'slider':
+                    this.values.push(new fn.slider(el))
+                    break
+                case 'range':
+                    this.values.push(new fn.range(el))
+                    break
+                case 'checkbox':
+                    this.values.push(new fn.checkbox(el))
+                    break
+                case 'toggle':
+                    this.values.push(new fn.toggle(el))
+                    break
+            }
         })
 
         // Fill dependencies / dependants List

@@ -8,7 +8,7 @@ interface dependency {
 type ValueType = string | number | number[] | boolean
 
 export default class Value {
-    value: ValueType
+    value: ValueType | undefined
     previousValues: ValueType[]
 
     element: HTMLElement
@@ -21,7 +21,7 @@ export default class Value {
     dataType: string
 
     // Initial string input from pug
-    dependencyExpressions: string
+    dependencyExpressions: string | undefined
     // Values that this Value is dependant on
     dependencies: dependency[]
     // Values that have a dependency to this Value
@@ -46,8 +46,9 @@ export default class Value {
         this.dependencies = []
         this.dependants = []
 
-        if (el.getAttribute('dependencies')) {
-            this.dependencyExpressions = el.getAttribute('dependencies')!
+        const dependencies = el.getAttribute('dependencies')
+        if (dependencies) {
+            this.dependencyExpressions = dependencies!
         }
 
         this.disabled = false

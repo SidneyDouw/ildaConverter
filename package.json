@@ -6,8 +6,8 @@
     "scripts": {
         "dev": "vite",
         "test": "node test/ILDAFile.test.js",
-        "lint": "eslint src/",
-        "build": "rm -rf dist && vite build && tsc -p tsconfig.json",
+        "lint": "eslint src/ && tsc --noEmit",
+        "build": "rm -rf dist && vite build && tsc -p tsconfig.build.json",
         "start": "node dist/server/app.js"
     },
     "repository": {

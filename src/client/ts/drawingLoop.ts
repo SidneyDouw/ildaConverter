@@ -10,10 +10,19 @@ const values = new Values(document.getElementById('controls')!)
 
 for (const val of values.values) {
     val.on('change', () => {
-        globals.settings[val.scriptName] = val.value
+        switch (val.scriptName) {
+            case 'resolution':
+                globals.settings.resolution = val.value as number
+                ctx.canvas.width = ctx.canvas.height = globals.settings.resolution!
+                break
 
-        if (val.scriptName == 'resolution') {
-            ctx.canvas.width = ctx.canvas.height = globals.settings.resolution!
+            case 'lineWidth':
+                globals.settings.lineWidth = val.value as number
+                break
+
+            case 'fps':
+                globals.settings.lineWidth = val.value as number
+                break
         }
     })
 }
@@ -42,6 +51,7 @@ export default function startDrawingLoop(file: ILDAFile) {
 
             // Render Code Here
 
+            //@ts-ignore
             drawFrame(ctx, file.pointData, currentFrame, {
                 resolution: globals.settings.resolution,
                 lineWidth: globals.settings.lineWidth,
