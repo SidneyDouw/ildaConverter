@@ -48,7 +48,7 @@ const test = (name, testFn) => {
 }
 
 const files = [
-    // 'airplane_0',
+    'airplane_0',
     'batman_0',
     'coupleInLove_5',
     'festiveChampagne_0',
