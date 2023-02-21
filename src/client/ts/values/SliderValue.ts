@@ -31,7 +31,7 @@ export default class SliderValue extends Value {
         }
 
         this.valueDiv.oninput = () => {
-            let v = this.textInputFilter(this.valueDiv.value)
+            const v = this.textInputFilter(this.valueDiv.value)
             this.valueDiv.value = v + ''
 
             if (typeof v == 'number') {
@@ -75,6 +75,6 @@ export default class SliderValue extends Value {
         }
 
         // Update Dependants
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
     }
 }

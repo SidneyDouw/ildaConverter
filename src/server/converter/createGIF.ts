@@ -4,20 +4,20 @@ import drawSettings from '../shared/drawSettings'
 import { CanvasRenderingContext2D } from 'canvas'
 import drawFrame from '../shared/drawFrame'
 
-const GIFEncoder = require('gif-encoder-2')
+import GIFEncoder from 'gif-encoder-2'
 
 export default function createGIF(
     ctx: CanvasRenderingContext2D,
     drawData: PointData[][],
     totalFrames: number,
     settings: drawSettings,
-    callback: Function,
+    callback: (data: Buffer) => void,
 ) {
     // Create GIF Encoder
 
-    let encoder = new GIFEncoder(settings.resolution, settings.resolution, 'neuquant', false, totalFrames)
+    const encoder = new GIFEncoder(settings.resolution!, settings.resolution!, 'neuquant', false, totalFrames)
 
-    encoder.setFrameRate(settings.fps)
+    encoder.setFrameRate(settings.fps!)
     encoder.setQuality(10)
     encoder.start()
 
@@ -44,6 +44,6 @@ export default function createGIF(
 
     // Send data to callback function
 
-    let buffer = encoder.out.getData() as Buffer
+    const buffer = encoder.out.getData()
     callback.call(null, buffer)
 }

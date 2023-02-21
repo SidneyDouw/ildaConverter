@@ -5,9 +5,11 @@ interface dependency {
     checkVal: string
 }
 
+type ValueType = string | number | number[] | boolean
+
 export default class Value {
-    value: any
-    previousValues: any[]
+    value: ValueType
+    previousValues: ValueType[]
 
     element: HTMLElement
 
@@ -27,25 +29,25 @@ export default class Value {
 
     disabled: boolean
 
-    events: any
+    events: { [key: string]: () => void }
 
     constructor(el: Element) {
         this.previousValues = []
 
         this.element = el as HTMLElement
 
-        this.scriptName = el.getAttribute('name')
-        this.label = el.children[0].children[0].textContent
+        this.scriptName = el.getAttribute('name')!
+        this.label = el.children[0].children[0].textContent!
 
-        this.type = el.getAttribute('type')
+        this.type = el.getAttribute('type')!
 
-        this.dataType = el.getAttribute('dataType')
+        this.dataType = el.getAttribute('dataType')!
 
         this.dependencies = []
         this.dependants = []
 
         if (el.getAttribute('dependencies')) {
-            this.dependencyExpressions = el.getAttribute('dependencies')
+            this.dependencyExpressions = el.getAttribute('dependencies')!
         }
 
         this.disabled = false
@@ -58,7 +60,7 @@ export default class Value {
 
         let boolFlag = true
 
-        for (let d of this.dependencies) {
+        for (const d of this.dependencies) {
             if (d.value.disabled) {
                 this.disableValue(true)
                 return
@@ -71,7 +73,7 @@ export default class Value {
 
         this.disableValue(!boolFlag)
 
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
     }
 
     disableValue(check: boolean) {
@@ -81,29 +83,28 @@ export default class Value {
 
     textInputFilter(input: string, dataType?: string) {
         let output: string
-        let type: string
-
-        type = dataType ? dataType : this.dataType
+        const type = dataType ? dataType : this.dataType
 
         switch (type) {
             case 'float':
-                output = input.match(/-?\d*[\.\,]?\d*/g)[0]
+                output = input.match(/-?\d*[.,]?\d*/g)![0]
                 break
 
             case 'uFloat':
-                output = input.match(/\d*[\.\,]?\d*/g)[0]
+                output = input.match(/\d*[.,]?\d*/g)![0]
                 break
 
             case 'int':
-                output = input.match(/-?\d*/g)[0]
+                output = input.match(/-?\d*/g)![0]
                 break
 
             case 'uInt':
-                output = input.match(/\d*/g)[0]
+                output = input.match(/\d*/g)![0]
                 break
 
             default:
                 console.error('Data Type not defined / found', type)
+                return
         }
 
         output = output.replace(',', '.')
@@ -117,9 +118,11 @@ export default class Value {
         }
     }
 
-    on(event: string, func: Function) {
+    on(event: string, func: () => void) {
         this.events['on' + event] = func.bind(this)
     }
 
-    setUI(value: any) {}
+    setUI(value: ValueType) {
+        throw new Error('BUG: Not implemented')
+    }
 }

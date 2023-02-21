@@ -5,7 +5,7 @@ import RangeValue from './RangeValue'
 import CheckboxValue from './CheckboxValue'
 import ToggleValue from './ToggleValue'
 
-let fn: any = {
+const fn = {
     text: TextValue,
     slider: SliderValue,
     range: RangeValue,
@@ -21,23 +21,23 @@ export default class Values {
 
         this.values = []
 
-        Array.from(parentDiv.getElementsByClassName('property')).forEach((el: HTMLElement) => {
-            this.values.push(new fn[el.getAttribute('type')](el))
+        Array.from(parentDiv.getElementsByClassName('property')).forEach((el) => {
+            this.values.push(new fn[el.getAttribute('type')!](el))
         })
 
         // Fill dependencies / dependants List
         // Only works after all Values have been initialized
 
-        for (let currentValue of this.values) {
+        for (const currentValue of this.values) {
             if (currentValue.dependencyExpressions) {
-                let depExp = currentValue.dependencyExpressions.replace(/\s/g, '').split('&&')
+                const depExp = currentValue.dependencyExpressions.replace(/\s/g, '').split('&&')
 
-                for (let dep of depExp) {
-                    let dName = dep.replace(/([\W\d]|false$|true$)/g, '')
+                for (const dep of depExp) {
+                    const dName = dep.replace(/([\W\d]|false$|true$)/g, '')
                     let dExpression = dep.replace(/\w/g, '')
-                    let match = dep.match(/([\d]|false$|true$)/g)
+                    const match = dep.match(/([\d]|false$|true$)/g)
                     let dCheckValue = match && match.length > 0 ? match[0] : ''
-                    let dValue = this.find(dName)
+                    const dValue = this.find(dName)!
 
                     if (dExpression == '!') {
                         dExpression = '=='
@@ -59,7 +59,7 @@ export default class Values {
     }
 
     find(scriptName: string) {
-        for (let value of this.values) {
+        for (const value of this.values) {
             if (value.scriptName == scriptName) {
                 return value
             }

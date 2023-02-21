@@ -23,8 +23,8 @@ export default class TextValue extends Value {
             this.valueDiv.select()
         }
 
-        this.valueDiv.oninput = (evt) => {
-            let v = this.textInputFilter(this.valueDiv.value)
+        this.valueDiv.oninput = () => {
+            const v = this.textInputFilter(this.valueDiv.value)
             this.valueDiv.value = v + ''
 
             if (typeof v == 'number') {
@@ -65,6 +65,6 @@ export default class TextValue extends Value {
         }
 
         // Update Dependants
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
     }
 }

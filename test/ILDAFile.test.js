@@ -45,6 +45,7 @@ const expect = (actual) => {
 const test = (name, testFn) => {
     console.log(`\nRunning Test: "${name}"`)
     testFn()
+    console.log(`  OK"`)
 }
 
 const files = [
