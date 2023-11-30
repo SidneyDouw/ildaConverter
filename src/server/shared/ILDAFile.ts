@@ -22,7 +22,7 @@ export interface HeaderData {
     reserved_2: number
 }
 export interface PointData {
-    [key: string]: number
+    [key: string]: number | undefined
     x?: number
     y?: number
     z?: number
@@ -213,7 +213,7 @@ export default class ILDAFile {
     // FileInfo
 
     filename: string
-    formatCode: number
+    formatCode: undefined
     length: number
 
     constructor(filename: string, bufferData: Buffer) {
@@ -225,17 +225,19 @@ export default class ILDAFile {
         this.headerData = []
         this.pointData = []
 
+        this.length = 0
+
         // this.readHeaderOnce()
         this.readFile()
     }
 
     readHeaderOnce() {
-        for (let fieldname in headerStructure) {
-            let datatype = headerStructure[fieldname].type
-            let start = headerStructure[fieldname].range[0]
-            let end = headerStructure[fieldname].range[1]
+        for (const fieldname in headerStructure) {
+            const datatype = headerStructure[fieldname].type
+            const start = headerStructure[fieldname].range[0]
+            const end = headerStructure[fieldname].range[1]
 
-            let fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
+            const fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
             console.log(fieldname, fieldvalue)
         }
     }
@@ -253,15 +255,15 @@ export default class ILDAFile {
     }
 
     readHeader() {
-        let header: HeaderData = <HeaderData>{}
+        const header: HeaderData = <HeaderData>{}
         let byteRange = 0
 
-        for (let fieldname in headerStructure) {
-            let datatype = headerStructure[fieldname].type
-            let start = headerStructure[fieldname].range[0] + this.byteOffset
-            let end = headerStructure[fieldname].range[1] + this.byteOffset
+        for (const fieldname in headerStructure) {
+            const datatype = headerStructure[fieldname].type
+            const start = headerStructure[fieldname].range[0] + this.byteOffset
+            const end = headerStructure[fieldname].range[1] + this.byteOffset
 
-            let fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
+            const fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
 
             byteRange += end - start
             header[fieldname] = fieldvalue
@@ -274,23 +276,26 @@ export default class ILDAFile {
     readPointData() {
         if (this.byteOffset >= this.bufferData.length) return
 
-        let header = this.headerData[this.headerData.length - 1]
-        let pointStructure = ilda_point_structure['ilda_' + header.formatCode]
-        let pointArr: PointData[] = []
+        const header = this.headerData[this.headerData.length - 1]
+        const pointStructure = ilda_point_structure['ilda_' + header.formatCode]
+        const pointArr: PointData[] = []
 
         for (let index = 0; index < header.dataRecords; index++) {
-            let point: PointData = <PointData>{}
+            const point: PointData = <PointData>{}
             let byteRange = 0
 
-            for (let fieldname in pointStructure) {
-                let datatype = pointStructure[fieldname].type
-                let start = pointStructure[fieldname].range[0] + this.byteOffset
-                let end = pointStructure[fieldname].range[1] + this.byteOffset
+            for (const fieldname in pointStructure) {
+                const datatype = pointStructure[fieldname].type
+                const start = pointStructure[fieldname].range[0] + this.byteOffset
+                const end = pointStructure[fieldname].range[1] + this.byteOffset
 
-                let fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
+                const fieldvalue = this.convertBuffer(this.bufferData.slice(start, end), datatype)
 
                 byteRange += end - start
-                point[fieldname] = fieldvalue as number
+                if (typeof fieldvalue === 'string') {
+                    throw new Error("BUG: fieldvalue should not be a string, that only occurs in 'HeaderData'")
+                }
+                point[fieldname] = fieldvalue
             }
 
             this.byteOffset += byteRange

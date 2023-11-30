@@ -6,45 +6,52 @@ import globals from './globals'
 
 // Update Settings via Sliders
 
-let values = new Values(document.getElementById('controls'))
+const values = new Values(document.getElementById('controls')!)
 
-for (let val of values.values) {
+for (const val of values.values) {
     val.on('change', () => {
-        globals.settings[val.scriptName] = val.value
+        switch (val.scriptName) {
+            case 'resolution':
+                globals.settings.resolution = val.value as number
+                ctx.canvas.width = ctx.canvas.height = globals.settings.resolution!
+                break
 
-        if (val.scriptName == 'resolution') {
-            ctx.canvas.width = ctx.canvas.height = globals.settings.resolution
+            case 'lineWidth':
+                globals.settings.lineWidth = val.value as number
+                break
+
+            case 'fps':
+                globals.settings.lineWidth = val.value as number
+                break
         }
     })
 }
 
-console.log(values)
-
-let ctx = document.querySelector('canvas').getContext('2d')
-ctx.canvas.width = ctx.canvas.height = globals.settings.resolution
+const ctx = document.querySelector('canvas')!.getContext('2d')!
+ctx.canvas.width = ctx.canvas.height = globals.settings.resolution!
 
 let requestID: number
 
 export default function startDrawingLoop(file: ILDAFile) {
     let currentFrame = 0
-    let currentFps = 0
 
     // FPS Limiter
     let now: number
     let then: number = performance.now()
 
     // FPS Counter
-    let times: number[] = []
+    const times: number[] = []
 
     function loop() {
         now = performance.now()
-        let elapsed = now - then
+        const elapsed = now - then
 
-        if (elapsed > 1000 / globals.settings.fps) {
-            then = now - (elapsed % (1000 / globals.settings.fps))
+        if (elapsed > 1000 / globals.settings.fps!) {
+            then = now - (elapsed % (1000 / globals.settings.fps!))
 
             // Render Code Here
 
+            //@ts-ignore
             drawFrame(ctx, file.pointData, currentFrame, {
                 resolution: globals.settings.resolution,
                 lineWidth: globals.settings.lineWidth,
@@ -65,8 +72,6 @@ export default function startDrawingLoop(file: ILDAFile) {
                 times.shift()
             }
             times.push(now)
-
-            currentFps = times.length
         }
 
         requestID = requestAnimationFrame(loop)

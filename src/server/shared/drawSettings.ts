@@ -1,8 +1,6 @@
 import { Image } from 'canvas'
 
 export default interface drawSettings {
-    [key: string]: any
-
     resolution?: number
     lineWidth?: number
     fps?: number

@@ -41,7 +41,7 @@ export default class RangeValue extends Value {
         this.sliderDiv1.oninput = () => {
             this.valueDiv1.value = this.sliderDiv1.value
 
-            let diff = this.value[1] - this.value[0]
+            const diff = this.value[1] - this.value[0]
             this.sliderDiv2.value = parseFloat(this.sliderDiv1.value) + diff + ''
             this.valueDiv2.value = parseFloat(this.sliderDiv1.value) + diff + ''
 
@@ -49,11 +49,11 @@ export default class RangeValue extends Value {
         }
 
         this.valueDiv1.oninput = () => {
-            let v = this.textInputFilter(this.valueDiv1.value)
+            const v = this.textInputFilter(this.valueDiv1.value)
             this.valueDiv1.value = v + ''
 
             if (typeof v === 'number') {
-                let diff = this.value[1] - this.value[0]
+                const diff = this.value[1] - this.value[0]
                 this.sliderDiv2.value = v + diff + ''
                 this.valueDiv2.value = v + diff + ''
 
@@ -72,7 +72,7 @@ export default class RangeValue extends Value {
         }
 
         this.valueDiv2.oninput = () => {
-            let v = this.textInputFilter(this.valueDiv2.value)
+            const v = this.textInputFilter(this.valueDiv2.value)
             this.valueDiv2.value = v + ''
 
             if (typeof v == 'number') {
@@ -94,8 +94,8 @@ export default class RangeValue extends Value {
             this.valueDiv2.value = 'multiple'
         }
         if (typeof values == 'object') {
-            let value1 = values[0] as number
-            let value2 = values[1] as number
+            const value1 = values[0] as number
+            const value2 = values[1] as number
 
             this.sliderDiv1.value = value1 + ''
             this.valueDiv1.value = Math.round(value1 * 100) / 100 + ''
@@ -122,9 +122,9 @@ export default class RangeValue extends Value {
         }
 
         // Update Dependants
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
 
-        let values = [...this.value]
+        const values = [...this.value]
         values.sort((a, b) => a - b)
 
         // Update Value Range Indicator

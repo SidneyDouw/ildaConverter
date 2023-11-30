@@ -1,21 +1,12 @@
 import express from 'express'
-import fileupload from 'express-fileupload'
+import fileupload, { UploadedFile } from 'express-fileupload'
 import fs from 'fs'
-
 import ILDAFile from './shared/ILDAFile'
-import { Stream } from 'stream'
-import archiver from 'archiver'
-
 import converter from './converter/converter'
 import drawSettings from './shared/drawSettings'
 import { Image, loadImage } from 'canvas'
 
 const app = express()
-
-// Pug Setup
-
-app.set('view engine', 'pug')
-app.set('views', 'dist/views/dynamic')
 
 // Routes
 
@@ -31,7 +22,7 @@ app.use(
 )
 
 app.post('/convert', (req, res) => {
-    let files = req.files as any
+    const files = req.files
 
     if (!files || !files.data) {
         res.status(200).send(
@@ -48,16 +39,18 @@ app.post('/convert', (req, res) => {
         return
     }
 
-    let ILDAfileName = files.data.name as string
-    let ILDAbufferData = files.data.data as Buffer
+    //@ts-ignore
+    const ILDAfileName = files.data.name
+    //@ts-ignore
+    const ILDAbufferData = files.data.data
 
-    let ildaFile = new ILDAFile(ILDAfileName, ILDAbufferData)
+    const ildaFile = new ILDAFile(ILDAfileName, ILDAbufferData)
     console.log('received ILDA file: ' + ILDAfileName)
 
     handleWatermark(files.watermark).then((watermark) => {
         // Set default settings
 
-        let settings: drawSettings = {
+        const settings: drawSettings = {
             resolution: 128,
             lineWidth: 1,
             fps: 25,
@@ -71,7 +64,7 @@ app.post('/convert', (req, res) => {
         if (req.body) {
             if (req.body.resolution) {
                 if (isNaN(parseInt(req.body.resolution))) {
-                    let msg = 'Invalid resolution, "' + req.body.resolution + '" is not a number'
+                    const msg = 'Invalid resolution, "' + req.body.resolution + '" is not a number'
                     console.log(msg)
                     res.status(400).send(msg)
                     return
@@ -84,7 +77,7 @@ app.post('/convert', (req, res) => {
 
             if (req.body.lineWidth) {
                 if (isNaN(parseFloat(req.body.lineWidth))) {
-                    let msg = 'Invalid linewidth, "' + req.body.lineWidth + '" is not a number'
+                    const msg = 'Invalid linewidth, "' + req.body.lineWidth + '" is not a number'
                     console.log(msg)
                     res.status(400).send(msg)
                     return
@@ -97,7 +90,7 @@ app.post('/convert', (req, res) => {
 
             if (req.body.fps) {
                 if (isNaN(parseInt(req.body.fps))) {
-                    let msg = 'Invalid fps, "' + req.body.fps + '" is not a number'
+                    const msg = 'Invalid fps, "' + req.body.fps + '" is not a number'
                     console.log(msg)
                     res.status(400).send(msg)
                     return
@@ -112,7 +105,7 @@ app.post('/convert', (req, res) => {
 
             if (req.body.watermark_alpha) {
                 if (isNaN(parseFloat(req.body.watermark_alpha))) {
-                    let msg = 'Invalid watermark_alpha, "' + req.body.watermark_alpha + '" is not a number'
+                    const msg = 'Invalid watermark_alpha, "' + req.body.watermark_alpha + '" is not a number'
                     console.log(msg)
                     res.status(400).send(msg)
                     return
@@ -129,7 +122,7 @@ app.post('/convert', (req, res) => {
         console.log('starting conversion process with settings:', settings)
         console.log('length:', ildaFile.length)
 
-        converter(ildaFile.pointData, settings, (data: Buffer | archiver.Archiver, error: any) => {
+        converter(ildaFile.pointData, settings, (data, error) => {
             if (error) {
                 console.log('conversion failed', error)
                 res.status(400).send(error.message)
@@ -141,12 +134,12 @@ app.post('/convert', (req, res) => {
             // Update total conversions
 
             let fileString = ''
-            let input = fs.createReadStream('totalConversions.json')
+            const input = fs.createReadStream('totalConversions.json')
             input.addListener('data', (chunk) => {
                 fileString += Buffer.from(chunk).toString()
             })
             input.addListener('end', () => {
-                let json = JSON.parse(fileString)
+                const json = JSON.parse(fileString)
                 json.count++
 
                 fs.createWriteStream('totalConversions.json').write(JSON.stringify(json), 'utf-8', (err) => {
@@ -164,18 +157,13 @@ app.post('/convert', (req, res) => {
             // Send converted file
 
             if (settings.fileFormat == 'GIF') {
-                let buffer = data as Buffer
+                const buffer = data
 
                 // let readStream = new Stream.PassThrough()
                 // readStream.end(buffer)
                 // readStream.pipe(res)
 
                 res.send(buffer)
-            }
-
-            if (settings.fileFormat == 'PNG' || settings.fileFormat == 'JPG') {
-                let archive = data as archiver.Archiver
-                archive.pipe(res)
             }
         })
     })
@@ -191,11 +179,13 @@ function clamp(val: number, min: number, max: number) {
     return val
 }
 
-function handleWatermark(watermark: any): Promise<Image | null> {
-    return new Promise((resolve, reject) => {
+function handleWatermark(watermark: UploadedFile | UploadedFile[]): Promise<Image | null> {
+    return new Promise((resolve) => {
         if (watermark) {
-            let watermarkFileName = watermark.name as string
-            let watermarkBufferData = watermark.data as Buffer
+            //@ts-ignore
+            const watermarkFileName = watermark.name
+            //@ts-ignore
+            const watermarkBufferData = watermark.data
 
             loadImage(watermarkBufferData).then((img) => {
                 resolve(img)

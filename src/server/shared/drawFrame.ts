@@ -1,26 +1,39 @@
 import { PointData } from './ILDAFile'
 import drawSettings from './drawSettings'
 import colorIndex from './defaultColorIndex'
+import NodeCanvas from 'canvas'
 
-export default function drawFrame(ctx: any, drawData: PointData[][], frame: number, settings: drawSettings) {
-    ctx.clearRect(0, 0, settings.resolution, settings.resolution)
+export default function drawFrame(
+    ctx: NodeCanvas.CanvasRenderingContext2D,
+    drawData: PointData[][],
+    frame: number,
+    settings: drawSettings,
+) {
+    ctx.clearRect(0, 0, settings.resolution!, settings.resolution!)
     ctx.fillStyle = '#000'
-    ctx.fillRect(0, 0, settings.resolution, settings.resolution)
-    ctx.lineWidth = settings.lineWidth
+    ctx.fillRect(0, 0, settings.resolution!, settings.resolution!)
+    ctx.lineWidth = settings.lineWidth!
 
     for (let i = 1; i < drawData[frame].length; i++) {
-        let startPoint = drawData[frame][i - 1]
-        let nextPoint = drawData[frame][i + 0]
+        const startPoint = drawData[frame][i - 1]
+        const nextPoint = drawData[frame][i + 0]
 
         if (startPoint.statusCode == 64) continue
         if (nextPoint.statusCode == 64) continue
 
+        // TODO: input validation of drawdata, gotta check the format type to know whats in it
+        //       input validation of settings, should not be undefined at this point
+
+        if (!startPoint.x || !startPoint.y || !nextPoint.x || !nextPoint.y) {
+            return
+        }
+
         // Position
 
-        let x1 = ((startPoint.x + 32768) / 65535) * settings.resolution
-        let y1 = (1 - (startPoint.y + 32768) / 65535) * settings.resolution
-        let x2 = ((nextPoint.x + 32768) / 65535) * settings.resolution
-        let y2 = (1 - (nextPoint.y + 32768) / 65535) * settings.resolution
+        const x1 = ((startPoint.x + 32768) / 65535) * settings.resolution!
+        const y1 = (1 - (startPoint.y + 32768) / 65535) * settings.resolution!
+        const x2 = ((nextPoint.x + 32768) / 65535) * settings.resolution!
+        const y2 = (1 - (nextPoint.y + 32768) / 65535) * settings.resolution!
         // Z is still missing
 
         // Color
@@ -28,7 +41,7 @@ export default function drawFrame(ctx: any, drawData: PointData[][], frame: numb
         let r, g, b
 
         if (startPoint.colorIndex) {
-            let ci = startPoint.colorIndex % 64
+            const ci = startPoint.colorIndex % 64
 
             r = colorIndex[ci].r
             g = colorIndex[ci].g
@@ -52,17 +65,16 @@ export default function drawFrame(ctx: any, drawData: PointData[][], frame: numb
     // Watermark
 
     if (settings.watermark) {
-        let imgW = settings.watermark.width
-        let imgH = settings.watermark.height
-        let ratio = imgW / imgH
+        const imgW = settings.watermark.width
+        const imgH = settings.watermark.height
+        const ratio = imgW / imgH
 
-        let cw = ctx.canvas.width
-        let ch = ctx.canvas.height
+        const cw = ctx.canvas.width
+        const ch = ctx.canvas.height
 
-        let scale = 0.9
+        const scale = 0.9
 
-        ctx.globalAlpha = settings.watermark_alpha
-        // ctx.globalCompositeOperation = 'color-burn'
+        ctx.globalAlpha = settings.watermark_alpha!
 
         ctx.drawImage(
             settings.watermark,
@@ -73,6 +85,5 @@ export default function drawFrame(ctx: any, drawData: PointData[][], frame: numb
         )
 
         ctx.globalAlpha = 1
-        // ctx.globalCompositeOperation = 'source-over'
     }
 }

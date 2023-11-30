@@ -58,7 +58,7 @@ export default class ToggleValue extends Value {
 
         // Update Options Indicator
         for (let i = 0; i < this.optionDivs.length; i++) {
-            let opt = this.optionDivs[i]
+            const opt = this.optionDivs[i]
 
             if (opt.className.includes('left')) {
                 opt.className = 'value left'
@@ -74,6 +74,6 @@ export default class ToggleValue extends Value {
         }
 
         // Update Dependants
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
     }
 }

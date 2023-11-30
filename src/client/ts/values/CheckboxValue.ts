@@ -56,6 +56,6 @@ export default class CheckboxValue extends Value {
         }
 
         // Update Dependants
-        for (let d of this.dependants) d.activationFunction()
+        for (const d of this.dependants) d.activationFunction()
     }
 }
